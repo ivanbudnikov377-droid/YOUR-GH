@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <title>YOUR GC - Line Assistant</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- СОВРЕМЕННАЯ ЗАСТАВКА -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-glow-bg">
+            <div class="glow-orb orb-yellow"></div>
+            <div class="glow-orb orb-dark"></div>
+        </div>
+        <div id="splash-particles" class="splash-particles"></div>
+        <div class="splash-content">
+            <div class="splash-logo-box">
+                <h1 class="splash-title-top">YOUR</h1>
+                <div class="splash-logo-gc">
+                    <span class="logo-g">G</span><span class="logo-c">C</span>
+                </div>
+                <div class="splash-subtitle">GLOBAL CHEMICAL</div>
+            </div>
+            <div class="splash-loader-wrap">
+                <div class="splash-loader-bar"></div>
+                <div class="splash-hint">НАЖМИТЕ, ЧТОБЫ ПРОДОЛЖИТЬ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+    <div class="hmi-container hidden" id="main-app">
+        
+        <!-- ЛЕВОЕ МЕНЮ -->
+        <nav class="hmi-sidebar">
+            <button class="hmi-nav-btn active" onclick="switchTab('inputs', event)">
+                <svg viewBox="0 0 24 24"><path d="M19.77,14.23l-4.5-4.5c-0.39-0.39-1.02-0.39-1.41,0l-2.5,2.5c-0.39,0.39-0.39,1.02,0,1.41l4.5,4.5 c0.39,0.39,1.02,0.39,1.41,0L19.77,15.64C20.16,15.25,20.16,14.62,19.77,14.23z M8.23,17.77l-2.5-2.5 c-0.39-0.39-0.39-1.02,0-1.41l4.5-4.5c0.39-0.39,1.02-0.39,1.41,0l2.5,2.5c0.39,0.39,0.39,1.02,0,1.41l-4.5,4.5 C9.25,18.16,8.62,18.16,8.23,17.77z"/></svg>
+            </button>
+            <button class="hmi-nav-btn" onclick="switchTab('bottle', event)">
+                <svg viewBox="0 0 24 24"><path d="M10,2h4v2h-4V2z M15,4v5l2.5,4.5c0.3,0.6,0.5,1.2,0.5,1.9V20c0,1.1-0.9,2-2,2H8c-1.1,0-2-0.9-2-2v-4.6 c0-0.7,0.2-1.3,0.5-1.9L9,9V4H15z"/></svg>
+            </button>
+            <button class="hmi-nav-btn" onclick="switchTab('nozzles', event)">
+                <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+            </button>
+            <button class="hmi-nav-btn" onclick="switchTab('settings', event)">
+                <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+            </button>
+        </nav>
+
+        <!-- ПРАВАЯ ЧАСТЬ -->
+        <main class="hmi-main-content">
+            <!-- ВЕРХНЯЯ ПАНЕЛЬ (Логотип, Стоп, Время) -->
+            <header class="hmi-header">
+                <div class="hmi-header-logo">YOUR <span class="logo-yellow">G</span>C</div>
+                
+                <button class="hmi-stop-btn" title="СТОП">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                </button>
+                
+                <div class="hmi-clock">
+                    <div id="hmi-date">--.--.----</div>
+                    <div id="hmi-time">--:--:--</div>
+                </div>
+            </header>
+
+            <div class="hmi-workspace">
+                
+                <!-- 1. ЭКРАН ЗАМЕРОВ -->
+                <div id="screen-inputs" class="hmi-screen active">
+                    <div class="hmi-screen-title">Исходные данные</div>
+                    <div class="hmi-settings-scroll">
+                        <div class="hmi-inputs-container">
+                            
+                            <h3 class="hmi-section-title">Выбор оборудования</h3>
+                            <div class="hmi-form-row">
+                                <label class="hmi-label">Рабочая линия</label>
+                                <select id="input_line" class="hmi-input hmi-select">
+                                    <option value="line1">1 линия · 21w кольцо</option>
+                                    <option value="line2">2 линия · 22w прямая</option>
+                                    <option value="line3">3 линия · прямая АЛР цех 5</option>
+                                </select>
+                            </div>
+                            
+                            <div class="hmi-form-row">
+                                <label class="hmi-label">Диаметр сопел</label>
+                                <select id="input_nozzle_diameter" class="hmi-input hmi-select">
+                                    <option value="0.006">6 мм</option>
+                                    <option value="0.008">8 мм</option>
+                                    <option value="0.014">14 мм</option>
+                                </select>
+                            </div>
+
+                            <h3 class="hmi-section-title">1. Замеры тары</h3>
+                            <div class="hmi-form-row">
+                                <label class="hmi-label">Целевой вес нетто, г</label>
+                                <input type="number" id="input_weight" class="hmi-input" value="880" step="0.1" oninput="updateVolumePreview()">
+                            </div>
+                            <div class="hmi-form-row">
+                                <label class="hmi-label">Высота флакона, мм</label>
+                                <input type="number" id="input_height" class="hmi-input" value="238" step="1">
+                            </div>
+                            
+                            <h3 class="hmi-section-title">2. Замеры продукта</h3>
+                            <div class="hmi-form-row">
+                                <label class="hmi-label">Плотность, г/мл</label>
+                                <input type="number" id="input_density" class="hmi-input" value="1.034" step="0.001" oninput="updateVolumePreview()">
+                            </div>
+                            <div class="hmi-form-row">
+                                <label class="hmi-label">Вязкость, ед. (сП)</label>
+                                <input type="number" id="input_viscosity" class="hmi-input" value="1957" step="1">
+                            </div>
+
+                            <div class="hmi-calc-box" style="margin-top: 20px; text-align: center;">
+                                <div class="hmi-calc-row" style="justify-content: center; flex-direction: column;">
+                                    <span>Расчетный объем дозы:</span>
+                                    <strong id="calc_volume_result" style="font-size: 32px;">851.0 мл</strong>
+                                </div>
+                            </div>
+
+                            <button class="hmi-btn-generate" onclick="generateRecipeFromInputs()" style="margin-top: 20px;">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                                Сгенерировать настройки
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. ЭКРАН НАСТРОЙКИ НАЛИВА -->
+                <div id="screen-bottle" class="hmi-screen hidden">
+                    <div class="hmi-screen-title">Настройки налива</div>
+                    <div class="hmi-form-container" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                        <div style="width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 15px; padding: 20px;">
+                            <div class="hmi-form-row">
+                                <input type="number" id="bottle_delay" class="hmi-input" value="0.01" step="0.01">
+                                <label class="hmi-label" style="border-left-color: var(--hmi-accent);">Сек &nbsp; Задержка подъема сопел</label>
+                            </div>
+                            <div class="hmi-form-row">
+                                <input type="number" id="bottle_max_time" class="hmi-input" value="30.00" step="0.1">
+                                <label class="hmi-label" style="border-left-color: var(--hmi-accent);">Сек &nbsp; Допустимое время цикла налива</label>
+                            </div>
+                            <div class="hmi-form-row">
+                                <input type="number" id="bottle_input_dose" class="hmi-input" value="851.0" step="0.1">
+                                <label class="hmi-label" style="border-left-color: var(--hmi-accent);">Доза/мл</label>
+                            </div>
+                            <button class="hmi-big-btn" onclick="switchTab('nozzles', event)">
+                                Индивидуальные настройки форсунок
+                                <svg viewBox="0 0 24 24" class="hmi-arrow-right"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6l6,6l-6,6L8.59,16.59z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. ЭКРАН ФОРСУНОК -->
+                <div id="screen-nozzles" class="hmi-screen hidden">
+                    <div class="hmi-screen-title">Настройки форсунок</div>
+                    <div class="hmi-nozzles-layout">
+                        <div class="hmi-nozzles-list" id="nozzles-list-container"></div>
+                        <div class="hmi-nozzles-graphic">
+                            <div class="hmi-manifold">
+                                <div class="hmi-manifold-label">1LKC</div>
+                                <div class="hmi-pipe"></div><div class="hmi-pipe"></div><div class="hmi-pipe"></div>
+                                <div class="hmi-pipe"></div><div class="hmi-pipe"></div><div class="hmi-pipe"></div>
+                                <div class="hmi-pipe"></div><div class="hmi-pipe"></div><div class="hmi-pipe"></div>
+                                <div class="hmi-pipe"></div><div class="hmi-pipe"></div><div class="hmi-pipe"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. ЭКРАН НАСТРОЕК -->
+                <div id="screen-settings" class="hmi-screen hidden">
+                    <div class="hmi-screen-title">Настройки линии</div>
+                    <div class="hmi-settings-scroll">
+                        <div class="hmi-settings-section">
+                            <h3 class="hmi-section-title">Настройки бака продукта</h3>
+                            <div class="hmi-settings-grid">
+                                <div class="hmi-form-row"><input type="number" id="set_product_on" class="hmi-input" value="0.10" step="0.01"><label class="hmi-label">Сек <span>Подача продукта On</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_product_off" class="hmi-input" value="0.10" step="0.01"><label class="hmi-label">Сек <span>Подача продукта Off</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_fill_time_bak" class="hmi-input" value="90.00" step="0.1"><label class="hmi-label">Сек <span>Время подачи в бак</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_pressure" class="hmi-input" value="2.3" step="0.1" style="border-color: var(--hmi-accent);"><label class="hmi-label">Атм <span>Требуемое давление</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_sensitivity" class="hmi-input" value="0.1" step="0.1"><label class="hmi-label">Атм <span>Чувствительность</span></label></div>
+                            </div>
+                        </div>
+                        <div class="hmi-settings-section">
+                            <h3 class="hmi-section-title">Механика и тайминги</h3>
+                            <div class="hmi-settings-grid">
+                                <div class="hmi-form-row"><input type="number" id="set_stem_on_sec" class="hmi-input" value="0.02" step="0.01"><label class="hmi-label">Сек <span>Наливные штоки On</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_stem_on_speed" class="hmi-input" value="100.0" step="0.1"><label class="hmi-label">% <span>Штоки On (Скорость)</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_stem_on_steps" class="hmi-input" value="260" step="1"><label class="hmi-label">мм <span>Штоки On (Шагов)</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_stem_cycle_sec" class="hmi-input" value="0.50" step="0.01"><label class="hmi-label">Сек <span>Штоки (Цикл)</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_stem_cycle_speed" class="hmi-input" value="7.2" step="0.1"><label class="hmi-label">% <span>Штоки (Цикл) Скорость</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_stem_cycle_steps" class="hmi-input" value="195" step="1"><label class="hmi-label">мм <span>Штоки (Цикл) Шагов</span></label></div>
+                            </div>
+                        </div>
+                        <div class="hmi-settings-section">
+                            <h3 class="hmi-section-title">Синхронизация конвейера</h3>
+                            <div class="hmi-settings-grid">
+                                <div class="hmi-form-row"><input type="number" id="set_conv_on" class="hmi-input" value="0.01" step="0.01"><label class="hmi-label">Сек <span>Конвейер On</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_conv_off" class="hmi-input" value="0.01" step="0.01"><label class="hmi-label">Сек <span>Конвейер Off</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_valve_in_on" class="hmi-input" value="0.01" step="0.01"><label class="hmi-label">Сек <span>Отсекатель (Вход) On</span></label></div>
+                                <div class="hmi-form-row"><input type="number" id="set_valve_in_off" class="hmi-input" value="10.00" step="0.1"><label class="hmi-label">Сек <span>Отсекатель (Вход) Off</span></label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО -->
+    <div id="hmi-modal-nozzle" class="hmi-modal-overlay hidden">
+        <div class="hmi-modal">
+            <div class="hmi-modal-header">
+                <h3 id="modal-nozzle-title">Форсунка №1</h3>
+                <button class="hmi-modal-close" onclick="closeNozzleSettings()">✕</button>
+            </div>
+            <div class="hmi-modal-body">
+                <div class="hmi-modal-row">
+                    <label>Доза/мл</label>
+                    <input type="number" id="modal-input-dose" class="hmi-modal-input" value="851" step="1">
+                </div>
+                <div class="hmi-modal-row">
+                    <label>Пропорциональный коэффициент (Kp)</label>
+                    <input type="number" id="modal-input-kp" class="hmi-modal-input" value="1.65" step="0.01">
+                </div>
+                <div class="hmi-modal-row">
+                    <label>Интегральный коэффициент (Ki)</label>
+                    <input type="number" id="modal-input-ki" class="hmi-modal-input" value="0.10" step="0.01">
+                </div>
+            </div>
+            <div class="hmi-modal-footer">
+                <button class="hmi-btn-save" onclick="saveNozzleSettings()">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    Применить
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
