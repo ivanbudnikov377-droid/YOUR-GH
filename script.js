@@ -99,7 +99,7 @@ function updateVolumePreview() {
 }
 
 // ============================================================
-// 5. УМНОЕ ФИЗИЧЕСКОЕ ЯДРО (С УЧЕТОМ ДИАМЕТРА СОПЕЛ)
+// 5. УМНОЕ ФИЗИЧЕСКОЕ ЯДРО
 // ============================================================
 function generateRecipeFromInputs() {
     const lineSelect = document.getElementById('input_line');
@@ -109,13 +109,15 @@ function generateRecipeFromInputs() {
     const nozzle_D = parseFloat(diameterSelect.value);
     const selectedDiameterText = diameterSelect.options[diameterSelect.selectedIndex].text;
 
-    const weight = parseFloat(document.getElementById('input_weight').value);
+    const bottleVolume = parseFloat(document.getElementById('input_bottle_volume').value);
     const height = parseFloat(document.getElementById('input_height').value);
+    
+    const weight = parseFloat(document.getElementById('input_weight').value);
     const density = parseFloat(document.getElementById('input_density').value);
     const viscosity = parseFloat(document.getElementById('input_viscosity').value);
 
-    if (weight <= 0 || density <= 0 || viscosity <= 0) {
-        alert("Ошибка: Проверьте правильность ввода замеров. Вязкость должна быть больше нуля.");
+    if (bottleVolume <= 0 || height <= 0 || weight <= 0 || density <= 0 || viscosity <= 0) {
+        alert("Ошибка: Проверьте правильность ввода замеров. Все значения должны быть больше нуля.");
         return;
     }
 
@@ -183,7 +185,7 @@ function generateRecipeFromInputs() {
         });
     }
 
-    const bottleAreaMlPerMm = targetVolume_ml / height;
+    const bottleAreaMlPerMm = bottleVolume / height;
     const safeSubmergeDepthMm = 20; 
     const volumeToSubmergeMl = bottleAreaMlPerMm * safeSubmergeDepthMm;
     
@@ -193,35 +195,36 @@ function generateRecipeFromInputs() {
 
     const nozzleDownPosition = Math.round(height - 43);
     const nozzleUpPosition = Math.round(height + 74);
-    const isHighSpeed = (V_max > 2.0);
     
-    const liftSpeed = isHighSpeed ? 40 : 70;
-    const downSpeed = isHighSpeed ? 60 : 100;
-    const stemCycleTime = actualFillTime;
-
+    document.getElementById('set_tank_on').value = "0.10";
+    document.getElementById('set_tank_off').value = "0.10";
+    document.getElementById('set_tank_time').value = "90.00";
     document.getElementById('set_pressure').value = pressure_bar.toFixed(2);
-    document.getElementById('set_sensitivity').value = isHighSpeed ? "0.10" : "0.15";
-    
-    document.getElementById('set_stem_on_sec').value = "0.02"; 
-    document.getElementById('set_stem_on_speed').value = downSpeed.toFixed(1);
+    document.getElementById('set_sensitivity').value = (viscosity > 1000) ? "0.1" : "0.15";
+
+    document.getElementById('set_stem_on_sec').value = "0.02";
+    document.getElementById('set_stem_on_speed').value = "100.0";
     document.getElementById('set_stem_on_steps').value = nozzleUpPosition;
-    
-    document.getElementById('set_stem_cycle_sec').value = stemCycleTime.toFixed(2);
-    document.getElementById('set_stem_cycle_speed').value = liftSpeed.toFixed(1);
+
+    document.getElementById('set_stem_cycle_sec').value = actualFillTime.toFixed(2);
+    document.getElementById('set_stem_cycle_speed').value = (viscosity < 1000) ? "7.2" : "15.0"; 
     document.getElementById('set_stem_cycle_steps').value = nozzleDownPosition;
+
+    document.getElementById('set_stem_off_sec').value = "0.02";
+    document.getElementById('set_stem_off_speed').value = "120.0";
+
+    document.getElementById('set_drop_on').value = "0.01";
+    document.getElementById('set_drop_off').value = "0.01";
+    document.getElementById('set_gate_on').value = "0.02";
+    document.getElementById('set_gate_off').value = "0.01";
     
-    const valveInOffTime = stemCycleTime + 1.5; 
-    const valveInOnTime = 0.01;
-    
-    document.getElementById('set_valve_in_on').value = valveInOnTime.toFixed(2);
-    document.getElementById('set_valve_in_off').value = valveInOffTime.toFixed(2);
+    document.getElementById('set_cutter_in_on').value = "0.01";
+    document.getElementById('set_cutter_in_off').value = (actualFillTime + 2.5).toFixed(2);
+    document.getElementById('set_cutter_out_on').value = "0.01";
+    document.getElementById('set_cutter_out_off').value = "0.02";
     
     document.getElementById('set_conv_on').value = "0.01";
     document.getElementById('set_conv_off').value = "0.01";
-    
-    document.getElementById('set_fill_time_bak').value = "90.00";
-    document.getElementById('set_product_on').value = "0.10";
-    document.getElementById('set_product_off').value = "0.10";
 
     document.getElementById('bottle_input_dose').value = targetVolume_ml.toFixed(1);
     document.getElementById('bottle_max_time').value = (actualFillTime + 5).toFixed(1);
@@ -232,8 +235,9 @@ function generateRecipeFromInputs() {
     
     let report = `АВТОМАТИЧЕСКИЙ РАСЧЕТ ЗАВЕРШЕН\n\n`;
     report += `Линия: ${selectedLineText}\n`;
-    report += `Сопла: ${selectedDiameterText}\n\n`;
-    report += `Целевой объем: ${targetVolume_ml.toFixed(1)} мл\n`;
+    report += `Сопла: ${selectedDiameterText}\n`;
+    report += `Флакон: ${bottleVolume} мл, ${height} мм\n\n`;
+    report += `Целевой объем дозы: ${targetVolume_ml.toFixed(1)} мл\n`;
     report += `Безопасная скорость: ${V_max.toFixed(2)} м/с\n`;
     report += `Рассчитанное давление: ${pressure_bar.toFixed(2)} бар\n`;
     report += `Время налива: ~${actualFillTime.toFixed(1)} сек.\n`;
