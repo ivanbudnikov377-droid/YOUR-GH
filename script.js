@@ -102,7 +102,6 @@ function updateVolumePreview() {
 // 5. УМНОЕ ФИЗИЧЕСКОЕ ЯДРО (С УЧЕТОМ ДИАМЕТРА СОПЕЛ)
 // ============================================================
 function generateRecipeFromInputs() {
-    // 1. Считываем выбранное оборудование
     const lineSelect = document.getElementById('input_line');
     const selectedLineText = lineSelect.options[lineSelect.selectedIndex].text;
     
@@ -110,7 +109,6 @@ function generateRecipeFromInputs() {
     const nozzle_D = parseFloat(diameterSelect.value);
     const selectedDiameterText = diameterSelect.options[diameterSelect.selectedIndex].text;
 
-    // 2. Считываем физические замеры
     const weight = parseFloat(document.getElementById('input_weight').value);
     const height = parseFloat(document.getElementById('input_height').value);
     const density = parseFloat(document.getElementById('input_density').value);
@@ -124,24 +122,20 @@ function generateRecipeFromInputs() {
     const targetVolume_ml = weight / density;
     const viscosity_PaS = viscosity * 0.001;
     
-    // Геометрия
     const nozzle_A = Math.PI * Math.pow(nozzle_D / 2, 2);
     const nozzle_L = 0.02;
     const hose_D = 0.016;
     const hoseLengths = [1.5, 1.6, 1.8, 2.0, 1.7, 1.9, 2.1, 1.5, 1.8, 2.2, 2.0, 1.6];
     const hose_L_avg = 1.8; 
 
-    // ШАГ 1: Безопасная скорость
     let V_max = 0.8 + (viscosity * 0.0018); 
     if (V_max > 5.0) V_max = 5.0;
 
     const Q_max_safe_m3_s = V_max * nozzle_A;
     const Q_max_safe_ml_s = Q_max_safe_m3_s * 1000000;
 
-    // ШАГ 2: Оптимальное время
     const optimalTime_sec = targetVolume_ml / Q_max_safe_ml_s;
 
-    // ШАГ 3: Необходимое давление
     const R_hose = (128 * viscosity_PaS * hose_L_avg) / (Math.PI * Math.pow(hose_D, 4));
     const R_nozzle = (128 * viscosity_PaS * nozzle_L) / (Math.PI * Math.pow(nozzle_D, 4));
     const R_avg = R_hose + R_nozzle;
@@ -149,7 +143,6 @@ function generateRecipeFromInputs() {
     const P_required_Pa = Q_max_safe_m3_s * R_avg;
     let pressure_bar = P_required_Pa / 100000;
 
-    // ШАГ 4: Проверка безопасности оборудования
     const MAX_SAFE_PRESSURE_BAR = 3.0; 
     let isPressureLimited = false;
     let actualFillTime = optimalTime_sec;
@@ -164,7 +157,6 @@ function generateRecipeFromInputs() {
         actualFillTime = targetVolume_ml / Q_limited_ml_s;
     }
 
-    // ШАГ 5: Расчет для 12 форсунок
     const basePreAct = targetVolume_ml * 0.02; 
     calculatedNozzles = [];
     const P_actual_Pa = pressure_bar * 100000;
@@ -191,8 +183,6 @@ function generateRecipeFromInputs() {
         });
     }
 
-    // ШАГ 6: Обновление интерфейса
-    // РАСЧЕТ ЗАДЕРЖКИ ПОДЪЕМА (Погружение под зеркало продукта)
     const bottleAreaMlPerMm = targetVolume_ml / height;
     const safeSubmergeDepthMm = 20; 
     const volumeToSubmergeMl = bottleAreaMlPerMm * safeSubmergeDepthMm;
@@ -201,7 +191,6 @@ function generateRecipeFromInputs() {
     let submergeDelay = volumeToSubmergeMl / averageFlowRate;
     if (submergeDelay < 0.1) submergeDelay = 0.1;
 
-    // Расчет кинематики траверсы
     const nozzleDownPosition = Math.round(height - 43);
     const nozzleUpPosition = Math.round(height + 74);
     const isHighSpeed = (V_max > 2.0);
@@ -210,7 +199,6 @@ function generateRecipeFromInputs() {
     const downSpeed = isHighSpeed ? 60 : 100;
     const stemCycleTime = actualFillTime;
 
-    // Обновляем все поля на экране Шестеренки
     document.getElementById('set_pressure').value = pressure_bar.toFixed(2);
     document.getElementById('set_sensitivity').value = isHighSpeed ? "0.10" : "0.15";
     
@@ -235,7 +223,6 @@ function generateRecipeFromInputs() {
     document.getElementById('set_product_on').value = "0.10";
     document.getElementById('set_product_off').value = "0.10";
 
-    // Обновляем экран "Колба"
     document.getElementById('bottle_input_dose').value = targetVolume_ml.toFixed(1);
     document.getElementById('bottle_max_time').value = (actualFillTime + 5).toFixed(1);
     document.getElementById('bottle_delay').value = submergeDelay.toFixed(2); 
