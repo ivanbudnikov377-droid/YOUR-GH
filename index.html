@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <title>YOUR GC - Line Assistant</title>
     <link rel="manifest" href="manifest.json">
@@ -35,7 +35,7 @@
     <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
     <div class="hmi-container hidden" id="main-app">
         
-        <!-- ЛЕВОЕ МЕНЮ -->
+        <!-- ЛЕВОЕ МЕНЮ (На телефоне станет нижним) -->
         <nav class="hmi-sidebar">
             <button class="hmi-nav-btn active" onclick="switchTab('inputs', event)">
                 <svg viewBox="0 0 24 24"><path d="M19.77,14.23l-4.5-4.5c-0.39-0.39-1.02-0.39-1.41,0l-2.5,2.5c-0.39,0.39-0.39,1.02,0,1.41l4.5,4.5 c0.39,0.39,1.02,0.39,1.41,0L19.77,15.64C20.16,15.25,20.16,14.62,19.77,14.23z M8.23,17.77l-2.5-2.5 c-0.39-0.39-0.39-1.02,0-1.41l4.5-4.5c0.39-0.39,1.02-0.39,1.41,0l2.5,2.5c0.39,0.39,0.39,1.02,0,1.41l-4.5,4.5 C9.25,18.16,8.62,18.16,8.23,17.77z"/></svg>
@@ -53,7 +53,6 @@
 
         <!-- ПРАВАЯ ЧАСТЬ -->
         <main class="hmi-main-content">
-            <!-- ВЕРХНЯЯ ПАНЕЛЬ (Логотип, Стоп, Время) -->
             <header class="hmi-header">
                 <div class="hmi-header-logo">YOUR <span class="logo-yellow">G</span>C</div>
                 
@@ -132,8 +131,8 @@
                 <!-- 2. ЭКРАН НАСТРОЙКИ НАЛИВА -->
                 <div id="screen-bottle" class="hmi-screen hidden">
                     <div class="hmi-screen-title">Настройки налива</div>
-                    <div class="hmi-form-container" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                        <div style="width: 100%; max-width: 700px; display: flex; flex-direction: column; gap: 15px; padding: 20px;">
+                    <div class="hmi-form-container">
+                        <div style="width: 100%; display: flex; flex-direction: column; gap: 15px;">
                             <div class="hmi-form-row">
                                 <input type="number" id="bottle_delay" class="hmi-input" value="0.01" step="0.01">
                                 <label class="hmi-label" style="border-left-color: var(--hmi-accent);">Сек &nbsp; Задержка подъема сопел</label>
@@ -146,7 +145,7 @@
                                 <input type="number" id="bottle_input_dose" class="hmi-input" value="851.0" step="0.1">
                                 <label class="hmi-label" style="border-left-color: var(--hmi-accent);">Доза/мл</label>
                             </div>
-                            <button class="hmi-big-btn" onclick="switchTab('nozzles', event)">
+                            <button class="hmi-big-btn" onclick="switchTab('nozzles', event)" style="margin-top: 20px;">
                                 Индивидуальные настройки форсунок
                                 <svg viewBox="0 0 24 24" class="hmi-arrow-right"><path d="M8.59,16.59L13.17,12L8.59,7.41L10,6l6,6l-6,6L8.59,16.59z"/></svg>
                             </button>
